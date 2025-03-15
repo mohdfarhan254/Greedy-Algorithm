@@ -1,0 +1,35 @@
+class Solution {
+    public int findContentChildren(int[] childrenGreed, int[] cookieSizes) {
+   
+    /**
+     * Approach:
+     * - Sort both arrays (greed factors and cookie sizes).
+     * - Use two pointers to assign the smallest available cookie that satisfies a child.
+     * - Move to the next child if satisfied; otherwise, check the next cookie.
+     * - Return the count of satisfied children.
+     */
+
+        // Step 1: Sort both arrays
+        Arrays.sort(childrenGreed);
+        Arrays.sort(cookieSizes);
+
+        // Step 2: Initialize pointers
+        int childIndex  = 0;   // Tracks children
+        int cookieIndex = 0;   // Tracks cookies
+
+        // Step 3: Assign cookies using a greedy approach
+        while (childIndex < childrenGreed.length && cookieIndex < cookieSizes.length) {
+
+            if (cookieSizes[cookieIndex] >= childrenGreed[childIndex]) {
+                // If the cookie satisfies the child, move to the next child
+                childIndex++;
+            }
+
+            // Move to the next cookie
+            cookieIndex++;
+        }
+
+        // Step 4: Return the number of satisfied children
+        return childIndex;
+    }
+}
