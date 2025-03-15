@@ -1,0 +1,49 @@
+class Solution {
+
+    /*
+     * ✅ **Key Idea**:
+     * 1️⃣ The `*` can act as:
+     *    - `'('` (opening parenthesis)
+     *    - `')'` (closing parenthesis)
+     *    - `""` (empty string)
+     * 
+     * 2️⃣ We maintain two variables:
+     *    - `min`: Tracks the **minimum number of open brackets** required.
+     *    - `max`: Tracks the **maximum number of open brackets** possible.
+     * 
+     * 3️⃣ Processing each character:
+     *    - If `s[i] == '('`: Increase both `min` and `max` (it must be an opening bracket).
+     *    - If `s[i] == ')'`: Decrease both `min` and `max` (it must be a closing bracket).
+     *    - If `s[i] == '*'`:
+     *      - Decrease `min` (treat `*` as `')'`).
+     *      - Increase `max` (treat `*` as `'('`).
+     * 
+     * 4️⃣ If at any point `max < 0`, return `false` (too many closing brackets).
+     * 5️⃣ After processing the entire string, return `min == 0` (ensures valid pairing).
+     */
+
+    public boolean checkValidString(String s) {
+
+        int min = 0, max = 0;
+
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') {
+                min++;
+                max++;
+            } 
+            else if (ch == ')') {
+                min--;
+                max--;
+            } 
+            else { // ch == '*'
+                min--;  // Assume '*' acts as ')'
+                max++;  // Assume '*' acts as '('
+            }
+
+            if (min < 0) min = 0; // Ensure `min` never goes negative
+            if (max < 0) return false; // Too many closing brackets
+        }
+
+        return min == 0; // If `min` is 0, the string is valid
+    }
+}
