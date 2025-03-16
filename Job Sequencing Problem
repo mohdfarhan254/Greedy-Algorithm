@@ -1,0 +1,89 @@
+
+class Solution {
+
+    public ArrayList<Integer> JobSequencing(int[] id, int[] deadline, int[] profit) {
+        // code here..
+       /*
+   ✅ **Problem Statement:**
+   - Given `N` jobs, each with a **deadline** and **profit**.
+   - We can schedule **only one job per time slot**.
+   - Each job must be completed **before or on its deadline**.
+   - The goal is to **schedule jobs** in a way that **maximizes the total profit**.
+
+   ✅ **Approach:**
+   1️⃣ **Store Jobs as {profit, deadline}** → To easily access job data.
+   2️⃣ **Find Maximum Deadline** → This determines the maximum possible time slots.
+   3️⃣ **Sort Jobs by Profit (Descending Order)** → Prioritize high-profit jobs.
+   4️⃣ **Greedy Scheduling:**
+       - Assign each job to the **latest available slot** before its deadline.
+       - If a slot is free, schedule the job and add its profit.
+   5️⃣ **Return the total profit and number of scheduled jobs.**
+*/
+
+/*
+   ✅ **Time Complexity Analysis**
+   1️⃣ **Finding Maximum Deadline** → O(N)  
+      - We iterate through `deadline[]` to find the maximum deadline.
+
+   2️⃣ **Sorting Jobs by Profit** → O(N log N)  
+      - Sorting the list of jobs based on profit in descending order.
+
+   3️⃣ **Scheduling Jobs Greedily** → O(N * D)  
+      - For each job, we check at most `D` slots in the `availableSlots[]` array.
+      - In the worst case, `D` could be `N`, leading to O(N * N) complexity.
+      - However, **D is usually small** in real-world cases, making this closer to O(N log N).
+
+   ➡ **Overall Complexity: O(N log N) + O(N * D)**
+   - If `D` is small, it approximates **O(N log N)**.
+   - In the worst case, it is **O(N²)** (if `D ≈ N`).
+
+   ✅ **Space Complexity Analysis**
+   1️⃣ **Job List (jobs ArrayList)** → O(N)  
+      - Stores `{profit, deadline}` pairs for `N` jobs.
+
+   2️⃣ **Slot Array (availableSlots[])** → O(D)  
+      - Boolean array of size `maxDeadline + 1`.
+
+   ➡ **Overall Space Complexity: O(N + D)**  
+   - Typically, `D` is much smaller than `N`, so it is close to **O(N)** in practice.
+*/
+
+
+        int n = deadline.length;
+        
+        /* ✅ Step 1: Store Jobs as {profit, deadline} and find maxDeadline */
+        int maxDeadline = 0;
+        ArrayList<int[]> jobs = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            jobs.add(new int[]{profit[i], deadline[i]});
+            maxDeadline = Math.max(maxDeadline, deadline[i]);  // Track max deadline
+        }
+        
+        /* ✅ Step 2: Sort Jobs by Profit in Descending Order */
+        jobs.sort((a, b) -> Integer.compare(b[0], a[0]));  
+        
+        /* ✅ Step 3: Create Slot Array to Track Job Placement */
+        boolean[] availableSlots = new boolean[maxDeadline + 1];  
+        int maxProfit = 0, count = 0;  // Stores total profit & count of scheduled jobs
+        
+        /* ✅ Step 4: Assign Jobs to the Latest Possible Slot Before Their Deadline */
+        for (int[] job : jobs) {
+            int p = job[0];  // Profit of current job
+            int d = job[1];  // Deadline of current job
+            
+            /* 🔹 Find the latest available slot before or on the deadline */
+            for (int j = d; j > 0; j--) {
+                if (!availableSlots[j]) {  // Slot is free
+                    availableSlots[j] = true;  // Mark slot as occupied
+                    maxProfit += p;  // Add profit
+                    count++;  // Increase job count
+                    break;  // Stop searching for slots
+                }
+            }
+        }
+        
+        /* ✅ Step 5: Return the Result (Jobs Count, Maximum Profit) */
+        return new ArrayList<>(Arrays.asList(count, maxProfit));
+    }
+}
